@@ -89,10 +89,9 @@
     transform-origin: center;
     padding: 10px;
   }
-
 </style>
-
 <body></body>
+
 <script src="https://unpkg.com/tone"></script>
 <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
@@ -103,9 +102,10 @@
 const synth = new Tone.PolySynth().toDestination()
 // collection of chords
 const chords = [
-  ['C4', 'E4', 'G4'],
-  ['E4', 'F#4', 'G#4']
+  ['E3', 'G#3', 'B3', 'D3'],
+  ['A3', 'C3', 'E3', 'A4']
 ]
+
 let lastSecond = -1 // this is to "gate" the conditional below
 let playedNote // we'll use this to keep track of the note we played
 let chordIndex = 0 // which chord in the collection
@@ -141,26 +141,23 @@ nn.create('button')
   .addTo('body')
   .on('click', syncClock)
   
-nn.create('button')
-  .content('play')
-  .addTo('body')
-  .on('mousedown', attackNote)
-  .on('mouseup', releaseNote)
-
+// nn.create('button')
+//   .content('play')
+//   .addTo('body')
+//   .on('mousedown', attackNote)
+//   .on('mouseup', releaseNote)
   
-
-
-// document.body.style.background = "black"
-// document.body.s
- //screaming "https://upload.wikimedia.org/wikipedia/commons/d/dc/Scream-c.wav" 
-//Default Sounds (add file drop later) 
+//FROM SLIDERS
 const sound1 = 
 "https://upload.wikimedia.org/wikipedia/commons/5/56/ZappBeats_808.wav";
 const sound2 = "https://upload.wikimedia.org/wikipedia/commons/d/df/Hunting_horn_tone.ogg";
 
 
 //Initalize the two channels
-const player1 = new Tone.Player(sound1);
+const player1 = new Tone.Sampler({
+  urls: {'C2': sound1}
+})
+
 const player2 = new Tone.Player(sound2);
 
   
@@ -571,5 +568,4 @@ effect21.connect(spec2)
 effect22.connect(spec2)
 
 
-</script>
 </script>
