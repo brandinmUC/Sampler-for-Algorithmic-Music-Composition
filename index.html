@@ -1,59 +1,3 @@
-<body></body>
-<script src="https://unpkg.com/tone"></script>
-<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
-<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
-<script>
-/* global Tone, nn, d3, createWaveform, createSpectrum */
-const synth = new Tone.PolySynth().toDestination()
-// collection of chords
-const chords = [
-  ['C4', 'E4', 'G4'],
-  ['E4', 'F#4', 'G#4']
-]
-let lastSecond = -1 // this is to "gate" the conditional below
-let playedNote // we'll use this to keep track of the note we played
-let chordIndex = 0 // which chord in the collection
-let noteIndex = 0 // which note in the chord (try each person setting a different noteIndex to start with)
-
-
-// we'll use our system clock (new Date) to stay in sync
-function syncClock () {
-  window.requestAnimationFrame(syncClock)
-  const d = new Date()
-  const s = d.getSeconds() 
-  // every 4 seconds switch chord
-  if (s % 4 === 0 && s !== lastSecond) {
-    chordIndex++
-    lastSecond = s // this ensures it only updates once per second
-    console.log(chordIndex)
-  } 
-}
-  
-function attackNote () {
-  const ci = chordIndex % chords.length
-  const note = chords[ci][noteIndex]
-  synth.triggerAttack(note)
-  playedNote = note
-}
-  
-function releaseNote () {
-  synth.triggerRelease(playedNote)
-}
-
-nn.create('button')
-  .content('start')
-  .addTo('body')
-  .on('click', syncClock)
-  
-nn.create('button')
-  .content('play')
-  .addTo('body')
-  .on('mousedown', attackNote)
-  .on('mouseup', releaseNote)
-
-  
 <style>
   input{
     width: 600px
@@ -147,6 +91,7 @@ nn.create('button')
   }
 
 </style>
+
 <body></body>
 <script src="https://unpkg.com/tone"></script>
 <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
@@ -154,6 +99,56 @@ nn.create('button')
 <script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
 <script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
 <script>
+/* global Tone, nn, d3, createWaveform, createSpectrum */
+const synth = new Tone.PolySynth().toDestination()
+// collection of chords
+const chords = [
+  ['C4', 'E4', 'G4'],
+  ['E4', 'F#4', 'G#4']
+]
+let lastSecond = -1 // this is to "gate" the conditional below
+let playedNote // we'll use this to keep track of the note we played
+let chordIndex = 0 // which chord in the collection
+let noteIndex = 0 // which note in the chord (try each person setting a different noteIndex to start with)
+
+
+// we'll use our system clock (new Date) to stay in sync
+function syncClock () {
+  window.requestAnimationFrame(syncClock)
+  const d = new Date()
+  const s = d.getSeconds() 
+  // every 4 seconds switch chord
+  if (s % 4 === 0 && s !== lastSecond) {
+    chordIndex++
+    lastSecond = s // this ensures it only updates once per second
+    console.log(chordIndex)
+  } 
+}
+  
+function attackNote () {
+  const ci = chordIndex % chords.length
+  const note = chords[ci][noteIndex]
+  synth.triggerAttack(note)
+  playedNote = note
+}
+  
+function releaseNote () {
+  synth.triggerRelease(playedNote)
+}
+
+nn.create('button')
+  .content('start')
+  .addTo('body')
+  .on('click', syncClock)
+  
+nn.create('button')
+  .content('play')
+  .addTo('body')
+  .on('mousedown', attackNote)
+  .on('mouseup', releaseNote)
+
+  
+
 
 // document.body.style.background = "black"
 // document.body.s
