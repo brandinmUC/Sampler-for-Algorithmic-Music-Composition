@@ -149,15 +149,15 @@
   //   .on('mouseup', releaseNote)
     
   //FROM SLIDERS
-  let note = attackNote()
+
   
   //Initalize the two channels
   const player1 = new Tone.Sampler({
-    urls: {'C2': "ZappBeats_808.wav"}
+    urls: {'C2': "ZappBeats_808.wav"}, release: 1,
   })
   
   const player2 = new Tone.Sampler({
-    urls: {'F#5': "Hunting_horn_tone.mp3"}
+    urls: {'F#5': "Hunting_horn_tone.mp3"}, release: 1,
   })
   
     
@@ -255,9 +255,9 @@
       wet: e.target.value});
     chlabel2.content("Chorus (wet): " + val);
   }
-    
+  
   const loop1 = new Tone.Loop((time) => {
-  player1.triggerAttack(note, Tone.now(), 1, 0.00001)
+  player1.triggerAttackRelease(attackNote(), 1, Tone.now(), 1)
   }, 1);
     
   function togglePlayer1(e){
@@ -273,7 +273,7 @@
   }  
   
   const loop2 = new Tone.Loop((time) => {
-  player2.triggerAttack(note, Tone.now(), 1, 0.00001)
+  player2.triggerAttackRelease(attackNote(), 1, Tone.now(), 1)
   }, 1);
   function togglePlayer2(e){
     if (Tone.Transport.state !== 'started') {
