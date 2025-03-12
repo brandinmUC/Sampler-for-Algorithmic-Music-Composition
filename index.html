@@ -1,105 +1,379 @@
+<!DOCTYPE html>
+<html lang = "en">
 <style>
     input{
-      width: 600px
+      width: 300px
     }
-    
-    #button1{
-  /*     float: right; */
+    #playerDiv1 {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        height: 200px;
+        background-color: rgb(240, 83, 55);
+    }
+    #playerDiv2 {
+        height: 200px;
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        background-color: aquamarine;
+    }
+    #sync {
+        align-content: center;
+        background-color:cadetblue;
+        position: absolute;
+        bottom: 200px;
+        right: 0px
+    }
+    #spec1 {
+        align-content: center;
+        right: 0px;
+        background-color: powderblue;
+    }
+    #spec2 {
+        height: 100px;
+        position: relative;
+        align-content: center;
+        background-color: aquamarine;
+    }
+    .reverb {
+      position: absolute;
+      align-self: left;
+      top: 20px;
+      left: 0px;
+    }
+    .reverbtext {
+      position: absolute;
+      float: left;
       top: 0px;
-      transform-origin: right top;
-      width: 150px;
-  /*     border: 2px solid #73AD21; */
-  /*     padding: 10px; */
+      left: 0px;
     }
-    #button2{
-       top: 100px;
-      transform-origin: right top;
-      width: 150px;
-  /*     border: 3px solid #73AD21; */
-  /*     padding: 10px; */
+    .bits {
+      align-self: left;
+      top: 110px;
+      left: 0px;
+      position: absolute;
     }
-    #rate1{
-      float: left;
+    .bitstext {
+      align-self: left;
+      top: 90px;
+      left: 0px;
+      position: absolute;
     }
-    #rate2{
-      float: left;
+    .volume {
+      align-self: right;
+      top: 110px;
+      left: 870px;
+      position: absolute;
+     
     }
-    #bits1{
-      float: left;
-    }
-    #bits2{
-      float: left;
-    }
-    #volume1{
-      float: right;
-    }
-    #volume2{
-      float: right;
-    }
-    #volumetext1{
-      float:right;
-    }
-    #volumetext2{
-      float:right;
-    }
-    #chorus1{
-      float: right;
-    }
-    #chorus2{
-      float: right;
-    }
-    #chorustext1{
-      float:right;
-    }
-    #chorustext2{
-      float:right;
-    }
-    #toggle1{
-  /*     line-height: normal; */
-  /*     top:auto; */
+    .volumetext {
+      align-self: right;
+      top: 89px;
+      left: 1075px;
+      position: absolute;
       
-      left: 300px;
+    }
+    .chorus {
+      align-self: right;
+      position: absolute;
+      top: 20px;
+      left: 870px;
+    }
+    .chorustext {
+      align-self: right;
+      position: absolute;
+      top: 0px;
+      left: 1075px;
+    }
+    .channel {
+        float: center;
+        position: absolute;
+        top: 180px;
+        left: 500px;
+    }   
+    .toggle {
+      position: absolute;
+      float: center;
+      left: 475px;
+      top: 110px;
   
     }
-    #toggle2{
-      line-height: normal;
-      top:auto;
-      left: auto;
-  
-    }
-    #choosefile1 {
-      float: right;
-      width: 300px;
+    .choosefile {
+      float: center;
+      position: absolute;
+      top: 140px;
+      left: 500px;
   /*     border: 3px solid #73AD21; */
-  /*     padding: 10px; */
+  /*  */
     }
-    #choosefile2{
-      float: right;
-      width: 300px;
-  /*     border: 3px solid #73AD21; */
-  /*     padding: 10px; */
+    .button {
+      float: center;
+      position: absolute;
+      top: 110px;
+      left: 500px;
+  /*     border: 2px solid .73AD21; */
+  /*  */
     }
-  
-    #spec1{
-      transform-origin: center;
-      padding: 10px;
-    }
-  
-    #spec2{
-      transform-origin: center;
-      padding: 10px;
-    }
+
   </style>
   <body></body>
-  
   <script src="https://unpkg.com/tone"></script>
   <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
   <script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
   <script>
-  /* global Tone, nn, d3, createWaveform, createSpectrum */
-  const synth = new Tone.PolySynth().toDestination()
+  
+
+  class Player {
+    constructor (sound, speccolor, label, note) {
+        this.sound = sound;
+        this.note = note;
+        this.volume = 22;
+        this.bits = new Tone.BitCrusher().set({bits: 16});
+        this.chorus = new Tone.Chorus().start();
+        this.reverb = new Tone.Reverb().set({wet: 1})
+        this.player = new Tone.Sampler({
+            urls: {[this.note]: this.sound}, release: 1,
+        });
+        this.label = label
+        this.playerDiv = nn.create('div')
+                            .set({id: `playerDiv${this.label}`})
+                            .addTo('body');
+        this.rlabel =  nn.create('label')
+                        .set({class: `reverbtext`})
+                        .content('Reverb: 0')
+                        .addTo(this.playerDiv);
+        this.vlabel = nn.create('label')
+                        .set({class: `volumetext`})
+                        .content('Volume: 22')
+                        .addTo(this.playerDiv);
+        this.blabel = nn.create('label')
+                        .set({class: `bitstext`})
+                        .content('Bits: 16')
+                        .addTo(this.playerDiv);
+        this.chlabel = nn.create('label')
+                        .set({class:`chorustext`})
+                        .content('Chorus: 0')
+                        .addTo(this.playerDiv); 
+        this.clabel = nn.create('label')
+                        .set({class: `channel`})
+                        .content(`Channel ${this.label}: ` + this.sound)
+                        .addTo(this.playerDiv); 
+        this.spec = createSpectrum({range: [0, 8000], color: speccolor, id: `spec${this.label}`});
+        this.loop = new Tone.Loop((time) => {
+            if (!this.player.loaded) {
+                console.error("Sampler not loaded yet!");
+                return;
+            }
+            this.player.triggerAttackRelease(attackNote(noteIndex), 1, Tone.now(), 1);
+        }, 1);
+    }
+
+
+    connect() {
+        this.player.connect(this.reverb);
+        this.reverb.connect(this.bits);
+        this.reverb.connect(this.chorus);
+        this.bits.toDestination();
+        this.chorus.toDestination();
+        this.bits.connect(this.spec);
+        this.chorus.connect(this.spec);
+    }
+
+
+    createUI() {
+        nn.create('input') //reverb
+            .set({
+             
+          type: 'range',
+            min: 0, // minimum value for this slider
+            max: 1, // maximum value for this range
+            value: 0, // default value
+            step: 0.1, // smallest change we can make when we slide it
+            class: `reverb reverb${this.label}`
+            })
+            .addTo(this.playerDiv)
+            .on('input', this.changeReverb.bind(this));
+            
+
+        nn.create('input') //Volume
+            .set({
+            type: 'range',
+            min: -22, // minimum value for this slider
+            max: 22, // maximum value for this range
+            value: 0, // default value
+            step: 1, // smallest change we can make when we slide it
+            class: `volume volume${this.label}`
+            })
+            .addTo(this.playerDiv)
+            .on('input', this.changeVolume.bind(this));
+            
+
+        nn.create('input') //Bits
+            .set({
+            type: 'range',
+            min: 1, // minimum value for this slider
+            max: 16, // maximum value for this range
+            value: 16, // default value
+            step: 1, // smallest change we can make when we slide it
+            class: `bits bits${this.label}`
+            })
+            .addTo(this.playerDiv)
+            .on('input', this.changeBits.bind(this));
+        
+            
+        nn.create('input') //Chorus
+            .set({
+            type: 'range',
+            min: 0, // minimum value for this slider
+            max: 1, // maximum value for this range
+            value: 0, // default value
+            step: 0.1, // smallest change we can make when we slide it
+            class: `chorus chorus${this.label}`
+            })
+            .addTo(this.playerDiv)
+            .on('input', this.changeChorus.bind(this));
+
+
+        // visualizations
+        nn.create('input')
+            .set({
+            type: 'checkbox',
+            class: `toggle`
+            })
+            .content('Play sound')
+            .addTo(this.playerDiv)
+            .on('change', this.togglePlayer.bind(this));  
+
+            
+        // Read file input - from example
+        nn.create('input')
+            .set({
+            type: 'file', accept: 'audio/*', 
+            class: `choosefile` })
+            .addTo(this.playerDiv)
+            .on('change', (event) => {
+            const file = event.target.files[0]
+            if (file) this.loadFileToBuffer(file);
+            });
+        
+
+        // Inputs
+        nn.create('button')    // what we want to make
+            .set({
+            class: `button`})
+            .content(`Reset Channel ${this.label}`)    // what we want it to say
+            .addTo(this.playerDiv)      // where we want to put it
+            .on('click', this.resetSettings.bind(this));
+    }
+
+    
+    changeReverb(e) {
+        const reverb = Number(e.target.value);
+        console.log(`reverb${this.label}:`, reverb);
+        this.rlabel.content("Reverb: " + reverb);
+        this.reverb.set({
+        wet: e.target.value
+        });
+    }
+
+
+    changeVolume(e) {
+        const vol = Number(e.target.value);
+        console.log(`VOL${this.label}: ` + vol);
+        this.vlabel.content("Volume: " + (vol + 22));
+        this.player.volume.value = vol;
+    }
+
+
+    changeBits(e) {
+        const val = Number(e.target.value);
+        console.log(`BITS${this.label}`, val);
+        this.blabel.content("Bits: " + val);
+        this.bits.set({bits: val});
+    }
+
+
+    changeChorus(e) {
+        const val = Number(e.target.value);
+        this.chorus.set({     
+        frequency: 4, 
+        delayTime: 16, 
+        type: 'triangle', 
+        depth: 1, 
+        feedback: 0.1, 
+        spread: 120,
+        wet: e.target.value});
+        console.log(`CHORUS${this.label}: ` + val);
+        this.chlabel.content("Chorus (wet): " + val);
+    }
+        
+
+    togglePlayer(e) {
+        if (Tone.Transport.state !== 'started') {
+            Tone.Transport.start();
+        }
+        if (e.target.checked) {
+            this.loop.start()
+        } else {
+            this.loop.stop()
+        }
+    }
+
+
+    resetSettings(e) {
+        const reverb_doc = document.getElementsByClassName(`reverb${this.label}`)[0];
+        const bits_doc = document.getElementsByClassName(`bits${this.label}`)[0];
+        const volume_doc = document.getElementsByClassName(`volume${this.label}`)[0];
+        const chorus_doc = document.getElementsByClassName(`chorus${this.label}`)[0];
+        reverb_doc.value = 0;
+        volume_doc.value = this.player.volume.value = 0;
+        chorus_doc.value = 0;
+        bits_doc.value = 16; 
+        this.bits.set({bits: 16});
+        this.chorus.set({wet: 0});
+        this.rlabel.content("Reverb: " + 0);
+        this.vlabel.content("Volume: " + 22);
+        this.blabel.content("Bits: " + 16);
+        this.chlabel.content("Chorus: " + 0);
+    }
+
+
+    // file selection
+    loadFileToBuffer (file) {
+        const reader = new window.FileReader();
+        reader.onload = async (e) => {
+
+            const fileData = e.target.result;
+            const buffer = await Tone.context.decodeAudioData(fileData);
+            
+            this.player.buffer = buffer;
+            this.clabel.content(`Channel ${this.label}: ` + file.name);          
+        };
+        reader.readAsArrayBuffer(file);
+    } 
+}
+
+
+  // document.body.style.background = "black"
+  // screaming: "https://upload.wikimedia.org/wikipedia/commons/d/dc/Scream-c.wav" 
+
+  //Default Sounds
+  const sound1 = "ZappBeats_808.wav";
+  const sound2 = "Hunting_horn_tone.mp3";
+  
+  
+  const player1 = new Player(sound1, "red", 1, 'C2');
+  player1.connect();
+  player1.createUI();
+
+  const player2 = new Player(sound2, "green", 2, 'F#5');
+  player2.connect();
+  player2.createUI();
+  
+  
   // collection of chords
   const chords = [
     ['E3', 'G#3', 'B3', 'D3'],
@@ -126,457 +400,40 @@
     } 
   }
     
-  function attackNote () {
+  function attackNote (noteIndex) {
     const ci = chordIndex % chords.length
     const note = chords[ci][noteIndex]
     playedNote = note
     return playedNote
   }
     
-  function releaseNote () {
-    synth.triggerRelease(playedNote)
+  function changeNoteIdx(e) {
+    if (e.key === '1') {
+        noteIndex = 0;
+    } else if (e.key === '2') {
+        noteIndex = 1;
+    } else if (e.key === '3') {
+        noteIndex = 2;
+    } else if (e.key === '4') {
+        noteIndex = 3;
+    }
+    noteidx.content("Note Index: " + noteIndex);
   }
   
+
   nn.create('button')
+    .set({id: "sync"})
     .content('start')
     .addTo('body')
-    .on('click', syncClock)
-    
-  // nn.create('button')
-  //   .content('play')
-  //   .addTo('body')
-  //   .on('mousedown', attackNote)
-  //   .on('mouseup', releaseNote)
-    
-  //FROM SLIDERS
+    .on('click', syncClock);
 
-  
-  //Initalize the two channels
-  const player1 = new Tone.Sampler({
-    urls: {'C2': "ZappBeats_808.wav"}, release: 1,
-  })
-  
-  const player2 = new Tone.Sampler({
-    urls: {'F#5': "Hunting_horn_tone.mp3"}, release: 1,
-  })
-  
-    
-  // Initalize the two effects - player/effect
-  const effect11 = new Tone.BitCrusher();
-  const effect12 = new Tone.Chorus().start();
-  const effect21 = new Tone.BitCrusher();
-  const effect22 = new Tone.Chorus().start();
-  
-  // Make cinnections
-  player1.connect(effect11);
-  player1.connect(effect12);
-  player2.connect(effect21);
-  player2.connect(effect22);
-  player1.loop = true;
-  player2.loop = true;
-  effect11.toDestination();
-  effect12.toDestination();
-  effect21.toDestination();
-  effect22.toDestination();
-   
-    
-  function changeRate1(e){
-    const rate = Number(e.target.value);
-    console.log("RATE1:", rate);
-    rlabel1.content("Rate: " + rate);
-    player1.playbackRate = rate;
-  }
-  
-  
-  function changeVolume1(e){
-    const vol = Number(e.target.value);
-    console.log("VOL1: " + vol);
-    vlabel1.content("Volume: " + (vol + 22));
-    player1.volume.value = vol;
-  }
-    
-  
-  function changeBits1(e){
-    const val = Number(e.target.value);
-    console.log("BITS1", val);
-    blabel1.content("Bits: " + val);
-    effect11.set({bits: val});
-  }
-    
-  
-  function changeChorus1(e){
-    const val = Number(e.target.value);
-    effect12.set({
-      frequency: 4, 
-      delayTime: 16, 
-      type: 'triangle', 
-      depth: 1, 
-      feedback: 0.1, 
-      spread: 120,
-      wet: e.target.value});
-    console.log("CHORUS11: " + val);
-    chlabel1.content("Chorus (wet): " + val);
-  }
-    
-  
-  function changeRate2(e){
-    const rate = Number(e.target.value);
-    console.log("RATE:2", rate);
-    rlabel2.content("Rate: " + rate);
-    player2.playbackRate = rate;
-  }
-  
-  
-  function changeVolume2(e){
-    const vol = Number(e.target.value);
-    console.log("VOL2: " + vol);
-    vlabel2.content("Volume: " + (vol + 22));
-    player2.volume.value = vol;
-  }
-    
-  
-  function changeBits2(e){
-    const val = Number(e.target.value);
-    console.log("BITS2", val);
-    blabel2.content("Bits: " + val);
-    effect21.set({bits: val});
-  }
-    
-  
-  function changeChorus2(e){
-    const val = Number(e.target.value);
-    effect22.set({
-      frequency: 4, 
-      delayTime: 16, 
-      type: 'triangle', 
-      depth: 1, 
-      feedback: 0.1, 
-      spread: 120,
-      wet: e.target.value});
-    chlabel2.content("Chorus (wet): " + val);
-  }
-  
-  const loop1 = new Tone.Loop((time) => {
-  player1.triggerAttackRelease(attackNote(), 1, Tone.now(), 1)
-  }, 1);
-    
-  function togglePlayer1(e){
-    if (Tone.Transport.state !== 'started') {
-      Tone.Transport.start();
-    }
-    if (e.target.checked){
-       loop1.start()
-    }
-    else{
-      loop1.stop()
-    }
-  }  
-  
-  const loop2 = new Tone.Loop((time) => {
-  player2.triggerAttackRelease(attackNote(), 1, Tone.now(), 1)
-  }, 1);
-  function togglePlayer2(e){
-    if (Tone.Transport.state !== 'started') {
-      Tone.Transport.start();
-    }
-    if (e.target.checked){
-       loop2.start()
-    }
-    else{
-      loop2.stop()
-    }
-  }   
-    
-    
-  function resetSettings1(e){
-    const rate = document.getElementById("rate1");
-    const bits = document.getElementById("bits1");
-    const volume = document.getElementById("volume1");
-    const chorus = document.getElementById("chorus1");
-    rate.value = player1.playbackRate = 1;
-    volume.value = player1.volume.value = 0;
-    chorus.value = 0;
-    // if bits
-    bits.value = 16; //idk about this yet
-    effect11.set({bits: 16});  //idk about this yet
-    effect21.set({wet: 0});
-    rlabel1.content("Rate: " + 1);
-    vlabel1.content("Volume: " + 22);
-    blabel1.content("Bits: " + 16);
-    chlabel1.content("Chorus: " + 0);
-  }
-  
-    
-  function resetSettings2(e){
-    const rate = document.getElementById("rate2");
-    const bits = document.getElementById("bits2");
-    const volume = document.getElementById("volume2");
-    const chorus = document.getElementById("chorus2");
-    rate.value = player2.playbackRate = 1;
-    volume.value = player2.volume.value = 0;
-    chorus.value = 0;
-    // if bits
-    bits.value = 16; //idk about this yet
-    effect21.set({bits: 16});
-    effect22.set({wet: 0});  //idk about this yet
-    rlabel2.content("Rate: " + 1);
-    vlabel2.content("Volume: " + 22);
-    blabel2.content("Bits: " + 16);
-    chlabel2.content("Chorus: " + 0);
-  }  
-   
-    
-  // UI (to trigger play function)
-  // Sliders
-  nn.create('input') //Rate
-    .set({
-      type: 'range',
-      min: 0, // minimum value for this slider
-      max: 3, // maximum value for this range
-      value: 1, // default value
-      step: 0.01, // smallest change we can make when we slide it
-      id: "rate1"
-    })
-    .addTo('body')
-    .on('input', changeRate1);
-    
-    
-  const rlabel1 = nn.create('label')
-    .set({id: "rate1"})
-    .content('Rate: 1')
-    .addTo('body');
-    
-    
-  nn.create('input') //Volume
-    .set({
-      type: 'range',
-      min: -22, // minimum value for this slider
-      max: 22, // maximum value for this range
-      value: 0, // default value
-      step: 1, // smallest change we can make when we slide it
-      id: "volume1"
-    })
-    .addTo('body')
-    .on('input', changeVolume1);
-    
-    
-  const vlabel1 = nn.create('label')
-    .set({id: "volumetext1"})
-    .content('Volume: 22')
-    .addTo('body');
-    
-    
-  nn.create('input') //Bits
-    .set({
-      type: 'range',
-      min: 1, // minimum value for this slider
-      max: 16, // maximum value for this range
-      value: 16, // default value
-      step: 1, // smallest change we can make when we slide it
-      id: "bits1"
-    })
-    .addTo('body')
-    .on('input', changeBits1)
-  
-    
-  const blabel1 = nn.create('label')
-    .set({id: "bits1"})
-    .content('Bits: 16')
-    .addTo('body'); 
-  
-    
-  nn.create('input') //Chorus
-    .set({
-      type: 'range',
-      min: 0, // minimum value for this slider
-      max: 1, // maximum value for this range
-      value: 0, // default value
-      step: 0.1, // smallest change we can make when we slide it
-      id: "chorus1"
-    })
-    .addTo('body')
-    .on('input', changeChorus1)
-    
-   
-  const chlabel1 = nn.create('label')
-    .set({id:"chorustext1"})
-    .content('Chorus: 0')
-    .addTo('body'); 
-    
-    
-  // file selection
-  function loadFileToBuffer (file, channel) {
-    // we'll use the FileReader API...
-    const reader = new window.FileReader()
-  
-    // we'll setup the "onload" event listener,
-    // to decode the audio data from the file's data
-    // and apply it to the player's buffer
-    reader.onload = async (e) => {
-      const fileData = e.target.result
-      const buffer = await Tone.context.decodeAudioData(fileData)
-      if (channel === 1){
-      player1.buffer = buffer
-      clabel1.content('Channel 1: ' + file.name)
-      } else {
-        player2.buffer = buffer
-        clabel2.content('Channel 2: ' + file.name)
-      }
-    }
-  
-    // we'll read the file and trigger the "onload" listener above
-    reader.readAsArrayBuffer(file)
-  }
-  
-    
-  // visualizations
-  //CHANNEL 1
-  const spec1 = createSpectrum({ range: [0, 8000], color: "red", id: "spec1" })
-  const clabel1 = nn.create('label')
-    .set({id: "channel1"})
-    .content('Channel 1: ' + player1)
-    .addTo('body'); 
-  
-  nn.create('input')
-    .set({
-      type: 'checkbox',
-      id: "toggle1"
-    })
-    .content('play sound')
-    .addTo('body')
-    .on('change', togglePlayer1);  
-    
-  // Read file input - from example
-  nn.create('input')
-    .set({ type: 'file', accept: 'audio/*', id: "choosefile1" })
-    .addTo('body')
-    .on('change', () => {
-      const file = event.target.files[0]
-      if (file) loadFileToBuffer(file, 1)
-    })
-    
-  
-  // Inputs
-  nn.create('button')    // what we want to make
-    .set({id: "button1"})
-    .content('Reset Channel 1')    // what we want it to say
-    .addTo('body')      // where we want to put it
-    .on('click', resetSettings1);
-   
-  // CHANNEL 2 
-  // SLIDERS
-  nn.create('input') //Rate
-    .set({
-      type: 'range',
-      min: 0, // minimum value for this slider
-      max: 3, // maximum value for this range
-      value: 1, // default value
-      step: 0.01, // smallest change we can make when we slide it
-      id: "rate2"
-    })
-    .addTo('body')
-    .on('input', changeRate2);
-    
-    
-  const rlabel2 = nn.create('label')
-    .set({id: "rate2"})
-    .content('Rate: 1')
-    .addTo('body');
-    
-    
-  nn.create('input') //Volume
-    .set({
-      type: 'range',
-      min: -22, // minimum value for this slider
-      max: 22, // maximum value for this range
-      value: 0, // default value
-      step: 1, // smallest change we can make when we slide it
-      id: "volume2"
-    })
-    .addTo('body')
-    .on('input', changeVolume2);
-    
-    
-  const vlabel2 = nn.create('label')
-    .set({id: "volumetext2"})
-    .content('Volume: 22')
-    .addTo('body');
-    
-    
-  nn.create('input') //Bits
-    .set({
-      type: 'range',
-      min: 1, // minimum value for this slider
-      max: 16, // maximum value for this range
-      value: 16, // default value
-      step: 1, // smallest change we can make when we slide it
-      id: "bits2"
-    })
-    .addTo('body')
-    .on('input', changeBits2)
-  
-    
-  const blabel2 = nn.create('label')
-    .set({id: "bits2"})
-    .content('Bits: 16')
-    .addTo('body'); 
-  
-    
-  nn.create('input') 
-    .set({
-      type: 'range',
-      min: 0, // minimum value for this slider
-      max: 1, // maximum value for this range
-      value: 0, // default value
-      step: 0.1, // smallest change we can make when we slide it
-      id: "chorus2"
-    })
-    .addTo('body')
-    .on('input', changeChorus2)
-    
-   
-  const chlabel2 = nn.create('label')
-    .set({id: "chorustext2"})
-    .content('Chorus: 0')
-    .addTo('body');  
-    
-  const spec2 = createSpectrum({ range: [0, 8000], color: "green", id: "spec2"})
-  const clabel2 = nn.create('label')
-    .set({id: "chorus2"})
-    .content('Channel 2: ' + player2)
-    .addTo('body'); 
-  
-    
-  nn.create('input')
-    .set({
-      type: 'checkbox',
-      id: "toggle2"
-    })
-    .content('play sound')
-    .addTo('body')
-    .on('change', togglePlayer2); 
-    
-    
-  nn.create('input')
-    .set({ type: 'file', accept: 'audio/*', id: "choosefile2"})
-    .addTo('body')
-    .on('change', () => {
-      const file = event.target.files[0]
-      if (file) loadFileToBuffer(file, 2)
-    })
-     
-  
-  nn.create('button')    // what we want to make
-    .set({id: "button2"})
-    .content('Reset Channel 2')    // what we want it to say
-    .addTo('body')      // where we want to put it
-    .on('click', resetSettings2); 
-    
-    
-  effect11.connect(spec1)
-  effect12.connect(spec1)
-  effect21.connect(spec2)
-  effect22.connect(spec2)
-  
-  
+
+  noteidx = nn.create('label')
+            .set({class: `noteidx`})
+            .content('Note Index: ' + noteIndex)
+            .addTo('body');
+
+        
+  nn.on('keydown', changeNoteIdx)
   </script>
+</html>
