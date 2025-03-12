@@ -349,7 +349,7 @@
             const fileData = e.target.result;
             const buffer = await Tone.context.decodeAudioData(fileData);
             
-            this.player.buffer = buffer;
+            this.player.add(this.note, buffer);
             this.clabel.content(`Channel ${this.label}: ` + file.name);          
         };
         reader.readAsArrayBuffer(file);
