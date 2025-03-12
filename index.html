@@ -18,13 +18,34 @@
         align-items: flex-start;
         background-color: aquamarine;
     }
+    #playerDiv3 {
+        height: 200px;
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        background-color: yellow;
+   }
     #sync {
         align-content: center;
-        background-color:cadetblue;
+        background-color: cadetblue;
         position: absolute;
         bottom: 200px;
         right: 0px
     }
+    #record {
+      align-content: center;
+      background-color: red;
+      position: absolute;
+      bottom: 175px;
+      right: 0px
+   }
+    #stop {
+      align-content: center;
+      background-color: gray;
+      position: absolute;
+      bottom: 150px;
+      right: 0px
+   }
     #spec1 {
         align-content: center;
         right: 0px;
@@ -35,6 +56,12 @@
         position: relative;
         align-content: center;
         background-color: aquamarine;
+    }
+    #spec3 {
+        height: 300px;
+        position: relative;
+        align-content: center;
+        background-color: orange;
     }
     .reverb {
       position: absolute;
@@ -104,16 +131,12 @@
       position: absolute;
       top: 140px;
       left: 500px;
-  /*     border: 3px solid #73AD21; */
-  /*  */
     }
     .button {
       float: center;
       position: absolute;
       top: 110px;
       left: 500px;
-  /*     border: 2px solid .73AD21; */
-  /*  */
     }
 
   </style>
@@ -125,7 +148,11 @@
   <script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
   <script>
   
-
+  /* Sources
+  https://chatgpt.com/share/67d14da3-a188-8000-baa1-f8117dc7e8da
+  */
+    
+    
   class Player {
     constructor (sound, speccolor, label, note) {
         this.sound = sound;
@@ -363,6 +390,8 @@
   //Default Sounds
   const sound1 = "ZappBeats_808.wav";
   const sound2 = "Hunting_horn_tone.mp3";
+  let mic, recorder, audioChunks = [], sampler;
+  mic = new Tone.UserMedia();
   
   
   const player1 = new Player(sound1, "red", 1, 'C2');
@@ -373,7 +402,8 @@
   player2.connect();
   player2.createUI();
   
-  
+    
+    
   // collection of chords
   const chords = [
     ['E3', 'G#3', 'B3', 'D3'],
@@ -421,6 +451,72 @@
   }
   
 
+  async function startMicRecording() {
+    await Tone.start(); // Ensure Tone.js is active
+    await mic.open();
+    console.log("Microphone open:", mic);
+
+    // Set up MediaRecorder to capture mic input
+    const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recorder = new MediaRecorder(mediaStream);
+
+    recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+            audioChunks.push(event.data);
+        }
+    };
+
+    recorder.onstop = async () => {
+        console.log("Recording stopped.");
+        await loadRecordingIntoSampler();
+    };
+
+    audioChunks = []; // Reset audio chunks
+    recorder.start();
+    console.log("Recording started...");
+}
+    
+// Function to stop recording and save file
+function stopMicRecording() {
+    recorder.stop();
+    mic.close(); // Stop microphone input
+    console.log("Recording stopped.");
+}
+
+    
+async function loadRecordingIntoSampler() {
+    const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+    const fileReader = new FileReader();
+
+    fileReader.onload = async (event) => {
+        const arrayBuffer = event.target.result;
+        const audioBuffer = await Tone.context.decodeAudioData(arrayBuffer);
+        
+        // Load recorded audio into sampler at 'C3' (or any note you want)
+        const player3 = new Player(audioBuffer, "orange", 3, 'C3');
+        player3.connect();
+        player3.createUI();
+        console.log("Loaded recording into sampler!");
+
+        // Now you can trigger playback
+        sampler.triggerAttack("C3");
+    };
+
+    fileReader.readAsArrayBuffer(audioBlob);
+}
+    
+  nn.create('button')
+      .set({id: "record"})
+      .content('record')
+      .addTo('body')
+      .on('click', startMicRecording);
+
+  nn.create('button')
+      .set({id: "stop"})
+      .content('stop')
+      .addTo('body')
+      .on('click', stopMicRecording);
+  
   nn.create('button')
     .set({id: "sync"})
     .content('start')
