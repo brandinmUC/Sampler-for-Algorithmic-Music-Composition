@@ -1,0 +1,218 @@
+    input{
+        align-items: left;
+    }
+    body{
+        width: 100%;
+        height: 100%;
+        border-width: 0;
+        /* background-color: orange; */
+    }
+    #cover {
+        display: flex;
+        flex-direction: column;
+        align-items: center;     /* horizontal center */
+        justify-content: center; /* vertical center */
+        height: 100vh;
+        width: 100%;
+    }
+    #footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        background-color: white;
+    }
+    /* #playerDiv {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        height: 200px;
+    } */
+    #playerDiv1 {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        height: 200px;
+        background-color: rgb(240, 83, 55);
+    }
+    #playerDiv2 {
+        height: 200px;
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        background-color: aquamarine;
+    }
+    #playerDiv3 {
+        height: 200px;
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        background-color: yellow;
+   }
+    #sync {
+        align-content: center;
+        background-color: cadetblue;
+        position: absolute;
+        bottom: 200px;
+        right: 0px
+    }
+    #record {
+        align-content: center;
+        background-color: red;
+        position: absolute;
+        bottom: 175px;
+        right: 0px
+   }
+    #stop {
+        align-content: center;
+        background-color: gray;
+        position: absolute;
+        bottom: 150px;
+        right: 0px
+   }
+    #spec1 {
+        align-content: center;
+        right: 0px;
+        background-color: powderblue;
+    }
+    #spec2 {
+        height: 100px;
+        position: relative;
+        align-content: center;
+        background-color: aquamarine;
+    }
+    #spec3 {
+        height: 300px;
+        position: relative;
+        align-content: center;
+        background-color: orange;
+    }
+    .reverb {
+        position: absolute;
+        align-self: left;
+        top: 20px;
+        left: 0px;
+    }
+    .reverbtext {
+        position: absolute;
+        float: left;
+        top: 0px;
+        left: 0px;
+    }
+    .bits {
+        align-self: left;
+        top: 110px;
+        left: 0px;
+        position: absolute;
+    }
+    .bitstext {
+        align-self: left;
+        top: 90px;
+        left: 0px;
+        position: absolute;
+    }
+    .volume {
+        align-self: right;
+        top: 110px;
+        left: 870px;
+        position: absolute;
+     
+    }
+    .volumetext {
+        align-self: right;
+        top: 89px;
+        left: 1075px;
+        position: absolute;
+      
+    }
+    .chorus {
+        align-self: right;
+        position: absolute;
+        top: 20px;
+        left: 870px;
+    }
+    .chorustext {
+        align-self: right;
+        position: absolute;
+        top: 0px;
+        left: 1075px;
+    }
+    .channel {
+            float: center;
+            position: absolute;
+            top: 180px;
+            left: 500px;
+    }   
+    .toggle {
+        position: absolute;
+        float: center;
+        left: 475px;
+        top: 110px;
+  
+    }
+    .choosefile {
+        float: center;
+        position: absolute;
+        top: 140px;
+        left: 500px;
+    }
+    .button {
+        float: center;
+        position: absolute;
+        border-color: rgb(0, 0, 0);
+        border-radius: 8px;
+        font-size: 20px;
+        padding: 12px 24px;
+        color: black;
+    }
+   .title {
+        position: fixed;
+        top: 30vh;
+        align-items: center;
+        /* color: wheat; */
+   }
+   .subtitle {
+        position: fixed;
+        top: 40vh;
+        align-items: center;
+        /*color: wheat; */
+   }
+    #cover .button {
+        position: fixed;
+        top: 60vh;
+        align-items: center;
+    }
+    #cover .wave {
+        position: relative; 
+        align-items: center;
+    }
+    .wave1{
+        position: absolute;
+        top: 10%;      
+        pointer-events: all; /* explicitly enable clicks on SVG */
+        cursor: pointer;    
+    }
+    .wave2 {
+        position: absolute;
+        top: 65%;
+        pointer-events: all; /* explicitly enable clicks on SVG */
+        cursor: pointer; 
+    }
+    /* Fonts */
+    .bitcount-single {
+    font-family: "Bitcount Single", system-ui;
+    font-optical-sizing: auto;
+    font-weight: 280;
+    font-style: normal;
+    font-variation-settings:
+        "slnt" 0,
+        "CRSV" 0.5,
+        "ELSH" 0,
+        "ELXP" 0;
+    }
+    .outfit-semibold {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    }
